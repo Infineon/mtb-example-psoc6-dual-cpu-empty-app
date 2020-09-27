@@ -4,19 +4,28 @@ This is a minimal starter Dual-CPU application template for PSoC® 6 MCU devices
 
 For instructions on modifying and using this application template to create applications, follow steps from these sections:
 
-- "My First PSoC 6 MCU Design Using ModusToolbox IDE" in [AN228571](https://www.cypress.com/AN228571) – *Getting Started with PSoC 6 MCU on ModusToolbox* 
+- "My First PSoC 6 MCU Design Using Eclipse IDE for ModusToolbox" in [AN228571](https://www.cypress.com/AN228571) – *Getting Started with PSoC 6 MCU on ModusToolbox* 
 
 - "PSoC 6 MCU Dual-CPU Development" in [AN215656](https://www.cypress.com/AN215656) – *PSoC 6 MCU Dual-CPU System Design*
 
 ## Requirements
 
-- [ModusToolbox™ software](https://www.cypress.com/products/modustoolbox-software-environment) v2.1
+- [ModusToolbox® software](https://www.cypress.com/products/modustoolbox-software-environment) v2.2  
+    
+    **Note:** This code example version requires ModusToolbox software version 2.2 or later and is not backward compatible with v2.1 or older versions. If you cannot move to ModusToolbox v2.2, use the latest compatible version of this example: [latest-v1.X](https://github.com/cypresssemiconductorco/mtb-example-psoc6-dual-cpu-empty-app/tree/latest-v1.X).  
+- Board Support Package (BSP) minimum required version: 2.0.0  
 - Programming Language: C
-- Associated Parts: All [PSoC 6 MCU](http://www.cypress.com/PSoC6) parts
+- Associated Parts: All [PSoC® 6 MCU](http://www.cypress.com/PSoC6) parts
 
-## Supported Kits
+## Supported Toolchains (make variable 'TOOLCHAIN')
 
-- [PSoC 6 Wi-Fi BT Prototyping Kit](https://www.cypress.com/CY8CPROTO-062-4343W) (CY8CPROTO-062-4343W) - Default target
+- GNU Arm® Embedded Compiler v9.3.1 (GCC_ARM) - Default value of `TOOLCHAIN`
+- Arm compiler v6.11 (ARM)
+- IAR C/C++ compiler v8.42.2 (IAR)
+
+## Supported Kits (make variable 'TARGET')
+
+- [PSoC 6 Wi-Fi BT Prototyping Kit](https://www.cypress.com/CY8CPROTO-062-4343W) (CY8CPROTO-062-4343W) - Default value of `TARGET`
 - [PSoC 6 WiFi-BT Pioneer Kit](https://www.cypress.com/CY8CKIT-062-WiFi-BT) (CY8CKIT-062-WIFI-BT)
 - [PSoC 6 BLE Pioneer Kit](https://www.cypress.com/CY8CKIT-062-BLE) (CY8CKIT-062-BLE)
 - [PSoC 6 BLE Prototyping Kit](https://www.cypress.com/CY8CPROTO-063-BLE) (CY8CPROTO-063-BLE)
@@ -35,52 +44,26 @@ In the *cm0p_app* makefile, the following line were added to specify the applica
 CORE=CM0P
 ```
 
-If you intend to use the *design.modus* generated code in CM0+, then add BSP_DESIGN_MODUS to the *COMPONENTS=* in the CM0+ makefile.
+If you intend to use the *design.modus* generated code in CM0+, then add `BSP_DESIGN_MODUS` to the `COMPONENTS=` in the CM0+ Makefile.
 
-And the following lines were added/modified to point to a shared folder:
-```
-# Link to the library folder
-CY_EXTAPP_PATH=../shared/libs/
+In the *cm4_app* Makefile, the following lines were added/modified to add a dependency to *cm0p_app*:
 
-# Link to the devicesupport.xml file
-CY_DEVICESUPPORT_PATH=$(CY_EXTAPP_PATH)/psoc6pdl
-
-# Build CY_IGNORE list, allowing only the CM0P_LIBRARIES
-ALL_LIBRARIES=$(wildcard $(CY_EXTAPP_PATH)/*)
-CM0P_LIBRARIES=$(CY_EXTAPP_PATH)/TARGET_$(TARGET) $(CY_EXTAPP_PATH)/psoc6pdl $(CY_EXTAPP_PATH)/core-lib
-CY_IGNORE=$(filter-out $(CM0P_LIBRARIES), $(ALL_LIBRARIES))
-
-# Relative path to the "base" library. It provides the core makefile build
-# infrastructure.
-CY_BASELIB_PATH=$(CY_EXTAPP_PATH)/psoc6make
-```
-
-In the *cm4_app* makefile, the following lines were added/modified to add a dependency to *cm0p_app*:
 ```
 DISABLE_COMPONENTS=CM0P_SLEEP
 DEPENDENT_APP_PATHS=../cm0p_app
+
+getlibs : getlibs_cm0p
+getlibs_cm0p:
+	$(MAKE) -C ../cm0p_app/ $(MAKECMDGOALS)
 ```
 
-And the following lines were added/modified to point to a shared folder:
-```
-# Link to the library folder
-CY_EXTAPP_PATH=../shared/libs/
+The last lines are added to trigger the `make getlibs` command in the *cm0p_app* folder, when issuing the same command in the *cm4_app* folder. Each application should have its own *deps* folder. If the same library is used by both applications, it should be in the *deps* folder of both applications. If the library location is specified as the shared asset repo in the *mtb* file (which is by default), they will both automatically access it from the shared location. 
 
-# Get the absolute address where the Makefile is located
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-mkfile_dir := $(dir $(mkfile_path))
- 
-# Set path to the shared folders
-CY_GETLIBS_PATH=$(mkfile_dir)/$(CY_EXTAPP_PATH)
-
-# Relative path to the "base" library. It provides the core makefile build
-# infrastructure.
-CY_BASELIB_PATH=$(CY_EXTAPP_PATH)/psoc6make
-```
-
-All dependant libraries should be added to the *cm4_app/deps* folder, even if targeted to CM0+. The make files will create a shared folder in the root directory of the code example. By default, the CM0+ make file ignores all the non-essential libraries. If you added a new library targeting CM0+, include it in the *CM0P_LIBRARIES* variable in the CM0+ make file.
+When the CM4 project is built, it builds both the CM0+ and CM4 applications and the resulting build artifacts contain code for both applications. When the CM0+ application is built, it will only build that application. When the application starts, the CM0+ starts first. It is responsible for starting the CM4.
 
 By default, *cm0p_app* uses only 8192 bytes of SRAM and flash. If you wish to allocate more memory to *cm0p_app*, follow the instructions from the section "Customizing Linker Scripts" in [AN215656](https://www.cypress.com/AN215656) – *PSoC 6 MCU Dual-CPU System Design*.
+
+The HAL library only supports the CM4, so *cyhal.h* is not included in the CM0+ application. The PDL library supports both the CM4 and CM0+.
 
 ## Related Resources
 
@@ -100,15 +83,15 @@ By default, *cm0p_app* uses only 8192 bytes of SRAM and flash. If you wish to al
 | [CY8CKIT-062S2-43012](https://www.cypress.com/CY8CKIT-062S2-43012) PSoC 62S2 Wi-Fi BT Pioneer Kit | [CY8CPROTO-062S3-4343W](https://www.cypress.com/CY8CPROTO-062S3-4343W) PSoC 62S3 Wi-Fi BT Prototyping Kit |
 | [CYW9P62S1-43438EVB-01](https://www.cypress.com/CYW9P62S1-43438EVB-01) PSoC 62S1 Wi-Fi BT Pioneer Kit | [CYW9P62S1-43012EVB-01](https://www.cypress.com/CYW9P62S1-43012EVB-01) PSoC 62S1 Wi-Fi BT Pioneer Kit |                                                              |
 | **Libraries**                                                 |                                                              |
-| PSoC 6 Peripheral Driver Library (PDL) and docs                    | [psoc6pdl](https://github.com/cypresssemiconductorco/psoc6pdl) on GitHub |
-| Cypress Hardware Abstraction Layer (HAL) Library and docs          | [psoc6hal](https://github.com/cypresssemiconductorco/psoc6hal) on GitHub |
-| RetargetIO - A utility library to retarget the standard input/output (STDIO) messages to a UART port | [retarget-io](https://github.com/cypresssemiconductorco/retarget-io) on GitHub |
+| PSoC 6 Peripheral Driver Library (PDL) and docs  | [mtb-pdl-cat1](https://github.com/cypresssemiconductorco/mtb-pdl-cat1) on GitHub |
+| Cypress Hardware Abstraction Layer (HAL) Library and docs     | [mtb-hal-cat1](https://github.com/cypresssemiconductorco/mtb-hal-cat1) on GitHub |
+| Retarget IO - A utility library to retarget the standard input/output (STDIO) messages to a UART port | [retarget-io](https://github.com/cypresssemiconductorco/retarget-io) on GitHub |
 | **Middleware**                                               |                                                              |
-| CapSense library and docs                                    | [capsense](https://github.com/cypresssemiconductorco/capsense) on GitHub |
+| CapSense® library and docs                                    | [capsense](https://github.com/cypresssemiconductorco/capsense) on GitHub |
 | Links to all PSoC 6 MCU Middleware                           | [psoc6-middleware](https://github.com/cypresssemiconductorco/psoc6-middleware) on GitHub |
 | **Tools**                                                    |                                                              |
-| [Eclipse IDE for ModusToolbox](https://www.cypress.com/modustoolbox)     | The multi-platform, Eclipse-based Integrated Development Environment (IDE) that supports application configuration and development for PSoC 6 MCU and IoT designers.             |
-| [PSoC Creator](https://www.cypress.com/products/psoc-creator-integrated-design-environment-ide) | The Cypress IDE for PSoC and FM0+ MCU development.            |
+| [Eclipse IDE for ModusToolbox](https://www.cypress.com/modustoolbox)     | The cross-platform, Eclipse-based IDE for IoT designers that supports application configuration and development targeting converged MCU and wireless systems.             |
+| [PSoC Creator™](https://www.cypress.com/products/psoc-creator-integrated-design-environment-ide) | The Cypress IDE for PSoC and FM0+ MCU development.            |
 
 ## Other Resources
 
@@ -123,6 +106,7 @@ Document Title: *CE230479 - PSoC 6 MCU: Dual-CPU Empty Application Template*
 | Version | Description of Change |
 | ------- | --------------------- |
 | 1.0.0   | New code example      |
+| 2.0.0   | Major update to support ModusToolbox software v2.2. <br>This version is not backward compatible with ModusToolbox software v2.1 |
 
 ------
 
