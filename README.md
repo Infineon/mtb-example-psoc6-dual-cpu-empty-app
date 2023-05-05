@@ -4,7 +4,7 @@ This is a minimal starter dual-CPU application template for PSoC&trade; 6 MCU de
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-psoc6-dual-cpu-empty-app)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzA0NzkiLCJTcGVjIE51bWJlciI6IjAwMi0zMDQ3OSIsIkRvYyBUaXRsZSI6IlBTb0MmdHJhZGU7IDYgTUNVOiBEdWFsLUNQVSBlbXB0eSBhcHBsaWNhdGlvbiB0ZW1wbGF0ZSIsInJpZCI6Inlla3QiLCJEb2MgdmVyc2lvbiI6IjMuMS4wIiwiRG9jIExhbmd1YWdlIjoiRW5nbGlzaCIsIkRvYyBEaXZpc2lvbiI6Ik1DRCIsIkRvYyBCVSI6IklDVyIsIkRvYyBGYW1pbHkiOiJQU09DIn0=)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzA0NzkiLCJTcGVjIE51bWJlciI6IjAwMi0zMDQ3OSIsIkRvYyBUaXRsZSI6IlBTb0MmdHJhZGU7IDYgTUNVOiBEdWFsLUNQVSBlbXB0eSBhcHBsaWNhdGlvbiB0ZW1wbGF0ZSIsInJpZCI6Inlla3QiLCJEb2MgdmVyc2lvbiI6IjMuMi4wIiwiRG9jIExhbmd1YWdlIjoiRW5nbGlzaCIsIkRvYyBEaXZpc2lvbiI6Ik1DRCIsIkRvYyBCVSI6IklDVyIsIkRvYyBGYW1pbHkiOiJQU09DIn0=)
 
 ## Requirements
 
@@ -32,6 +32,7 @@ This is a minimal starter dual-CPU application template for PSoC&trade; 6 MCU de
 - [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CYW9P62S1-43012EVB-01) (`CYW9P62S1-43012EVB-01`)
 - [PSoC&trade; 62S3 Wi-Fi Bluetooth&reg; prototyping kit](https://www.infineon.com/CY8CPROTO-062S3-4343W) (`CY8CPROTO-062S3-4343W`)
 - [PSoC&trade; 62S4 pioneer kit](https://www.infineon.com/CY8CKIT-062S4) (`CY8CKIT-062S4`)
+- [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; prototyping kit](https://www.infineon.com/CY8CPROTO-062S2-43439) (`CY8CPROTO-062S2-43439`)
 - Rapid IoT connect developer kit (`CYSBSYSKIT-DEV-01`)
 - [PSoC&trade; 62S2 evaluation kit](https://www.infineon.com/CY8CEVAL-062S2) (`CY8CEVAL-062S2`, `CY8CEVAL-062S2-LAI-4373M2`, `CY8CEVAL-062S2-MUR-43439M2`, `CY8CEVAL-062S2-LAI-43439M2`)
 
@@ -217,6 +218,7 @@ Document title: *CE230479* - *PSoC&trade; 6 MCU: Dual-CPU empty application temp
  2.3.0   | Added support for 2 more kits.<br> Added custom design folder and modified folder name
  3.0.0   | Updated to support ModusToolbox&trade; software v3.0 and BSPs v4.X.<br> This version is not backward compatible with ModusToolbox&trade; software v2.4.
  3.1.0   | Added support for CY8CEVAL-062S2-LAI-43439M2 
+ 3.2.0   | Added support for CY8CPROTO-062S2-43439 and missing custom linker files for few BSPs 
 <br>
 
 ---------------------------------------------------------

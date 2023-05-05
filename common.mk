@@ -39,7 +39,7 @@ TARGET=CY8CPROTO-062-4343W
 # ARM     -- ARM Compiler (must be installed separately)
 # IAR     -- IAR Compiler (must be installed separately)
 #
-# See also: CY_COMPILER_PATH below
+# See also: CY_COMPILER_GCC_ARM_DIR in common_app.mk
 TOOLCHAIN=GCC_ARM
 
 # Default build configuration. Options include:
